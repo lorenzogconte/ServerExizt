@@ -1,10 +1,11 @@
 from .models import User, Profile
-from .serializers import UserSerializer, ProfileSerializer
+from .serializers import UserSerializer, ProfileSerializer, LoginSerializer
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from rest_framework import status, viewsets
 from django.shortcuts import get_object_or_404
+from django.contrib.auth import authenticate
 
 @api_view(['POST'])
 def signup(request):
@@ -17,8 +18,15 @@ def signup(request):
 
 @api_view(['POST'])
 def login(request):
-        
-    return Response({})
+    serializer = LoginSerializer(data=request.data)
+    if serializer.is_valid():
+        user = authenticate(username=serializer.validated_data['username'], password=serializer.validated_data['password'])
+        if user and user.is_active:   
+            token, _ = Token.objects.get_or_create(user=user)
+            return Response({'token': token.key, 'user': UserSerializer(user).data}, status=status.HTTP_200_OK)
+        return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
 

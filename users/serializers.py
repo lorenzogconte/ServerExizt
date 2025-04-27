@@ -13,7 +13,7 @@ class UserSerializer(serializers.ModelSerializer):
             username=validated_data['username'],
             email=validated_data['email']
         )
-        user.set_password(validated_data['password'])  # hashes password properly
+        user.set_password(validated_data['password'])  # hashes password
         user.save()
         return user
 
@@ -27,9 +27,3 @@ class ProfileSerializer(serializers.ModelSerializer):
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()
     password = serializers.CharField()
-
-    def validate(self, data):
-        user = authenticate(username=data['username'], password=data['password'])
-        if user and user.is_active:
-            return {"user": user}
-        raise serializers.ValidationError("Invalid credentials")
