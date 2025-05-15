@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-u-5!vxwopi4f*246t!7*+r1q0q@$psf#=-0141f@9$5shj&k)l
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '10.0.2.2',]
 
 
 # Application definition
@@ -37,6 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'users',
+    'friendships',
 ]
 
 MIDDLEWARE = [
@@ -120,3 +124,10 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AUTH_USER_MODEL = 'users.User'
+
+AUTHENTICATION_BACKENDS = [
+    'users.backends.EmailOrUsernameModelBackend',  # my custom backend
+    'django.contrib.auth.backends.ModelBackend',   # Django's default backend
+]
