@@ -12,7 +12,7 @@ class User(AbstractUser):
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete = models.CASCADE, primary_key = True)
     name = models.CharField(max_length = 40)
-    avatarUrl = models.URLField
+    avatarUrl = models.URLField(max_length=255, blank=True)
 
     def __str__(self):
         return f"{self.username}'s Profile"

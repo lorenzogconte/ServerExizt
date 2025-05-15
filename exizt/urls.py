@@ -13,10 +13,18 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from users import views
+from users import views as user_views
+from friendships import views as friendship_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('signup/', views.signup, name='signup'),
-    path('login/', views.login, name='login'),
+    path('signup/', user_views.signup, name='signup'),
+    path('login/', user_views.login, name='login'),
+    path('isauth/', user_views.is_authenticated, name='is_authenticated'),
+    path('profile/', user_views.profile, name='profile'),
+    path('send-request/', friendship_views.send_friend_request, name='send_friend_request'),
+    path('handle-request/', friendship_views.handle_friend_request, name='handle_friend_request'),
+    path('requests/', friendship_views.get_friend_requests, name='get_friend_requests'),
+    path('delete-friend/', friendship_views.delete_friend, name='delete_friend'),
+    path('friendships/', friendship_views.get_friends, name='friendships'),
 ]

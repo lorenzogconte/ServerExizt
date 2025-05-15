@@ -10,12 +10,10 @@ class EmailOrUsernameModelBackend(ModelBackend):
             username = kwargs.get(User.USERNAME_FIELD)
 
         try:
-            # Try to fetch user by username
-            user = User.objects.get(username=username)
+            user = User.objects.get(username=username) # Try to get user by username first
         except User.DoesNotExist:
-            # Try to fetch user by email
             try:
-                user = User.objects.get(email=username)
+                user = User.objects.get(email=username) # If not found, try to get user by email
             except User.DoesNotExist:
                 return None
 
