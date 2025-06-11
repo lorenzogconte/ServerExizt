@@ -5,6 +5,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from .services import FriendshipService
 from users.services import UserService
+from users.serializers import ProfileSerializer
+from .serializers import FriendRequestsSerializer
 
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
@@ -39,6 +41,7 @@ def send_friend_request(request):
     return Response({'success': f'Friend request sent to {receiver.username}'}, status=status.HTTP_201_CREATED)
 
 
+
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
@@ -47,7 +50,6 @@ def handle_friend_request(request):
     # Parse request data
     request_id = request.data.get('request_id')
     action = request.data.get('action')
-    
     if not request_id:
         return Response({'error': 'Request ID is required'}, status=status.HTTP_400_BAD_REQUEST)
     
@@ -56,85 +58,69 @@ def handle_friend_request(request):
     
     # Use service to get and update request
     friend_request = FriendshipService.get_friend_request(request_id, request.user)
-    
+
+    print(f"Found friend request: {friend_request}")
     if not friend_request:
         return Response({'error': 'Friend request not found'}, status=status.HTTP_404_NOT_FOUND)
     
-    updated_request = FriendshipService.update_request_status(friend_request, action)
+    result = FriendshipService.update_request_status(friend_request, action)
     
-    return Response({
-        'success': f'Friend request from {updated_request.sender.username} {action}ed'
-    }, status=status.HTTP_200_OK)
-
+    if action == 'accept':
+        return Response({
+            'success': f'Friend request from {result["sender"].username} accepted',
+            'friend': {
+                'id': result["sender"].id,
+                'username': result["sender"].username,
+                'email': result["sender"].email,
+                'since': result["created_at"]
+            }
+        }, status=status.HTTP_200_OK)
+    else:
+        return Response({
+            'success': f'Friend request from {result["sender"].username} rejected'
+        }, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def get_friend_requests(request):
-    """Get a list of pending friend requests"""
-    # Use service to get requests
-    sent_requests, received_requests = FriendshipService.get_user_requests(request.user)
+    received_requests = FriendshipService.get_received_pending_requests(request.user)
+    sent_requests = FriendshipService.get_sent_pending_requests(request.user)
     
-    # Format data for API response
-    sent_data = [{
-        'id': req.id,
-        'receiver': {
-            'id': req.receiver.id,
-            'username': req.receiver.username
-        },
-        'status': req.status,
-        'created_at': req.created_at
-    } for req in sent_requests]
+    serializer = FriendRequestsSerializer({
+        'sent_requests': sent_requests,
+        'received_requests': received_requests
+    })
     
-    received_data = [{
-        'id': req.id,
-        'sender': {
-            'id': req.sender.id,
-            'username': req.sender.username
-        },
-        'status': req.status,
-        'created_at': req.created_at
-    } for req in received_requests]
-    
-    return Response({
-        'sent_requests': sent_data,
-        'received_requests': received_data
-    }, status=status.HTTP_200_OK)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def get_friends(request):
-    """Get a list of the current user's accepted friends"""
-    # Use service to get friend data
-    accepted_as_sender, accepted_as_receiver = FriendshipService.get_user_friends(request.user)
+    """Get a list of the current user's friends"""
+    from users.models import Profile  # Add this import
     
-    friends = []
+    friends = FriendshipService.get_or_create_friendslist(request.user)
+    friend_profiles = []
     
-    # Format data for API response
-    for fr in accepted_as_sender:
-        friends.append({
-            'id': fr.receiver.id,
-            'username': fr.receiver.username,
-            'email': fr.receiver.email,
-            'request_id': fr.id,
-            'since': fr.updated_at
-        })
+    for friend in friends:
+        try:
+            # Get the friend's profile
+            profile = Profile.objects.get(user=friend)
+            
+            # Use ProfileSerializer directly
+            serialized_profile = ProfileSerializer(profile).data
+            friend_profiles.append(serialized_profile)
+            
+        except Profile.DoesNotExist:
+            # Skip if profile doesn't exist
+            pass
     
-    for fr in accepted_as_receiver:
-        friends.append({
-            'id': fr.sender.id,
-            'username': fr.sender.username,
-            'email': fr.sender.email,
-            'request_id': fr.id,
-            'since': fr.updated_at
-        })
-    
-    return Response(friends, status=status.HTTP_200_OK)
+    return Response(friend_profiles, status=status.HTTP_200_OK)
 
-
-@api_view(['DELETE'])
+@api_view(['POST'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def delete_friend(request):

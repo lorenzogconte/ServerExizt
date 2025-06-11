@@ -1,18 +1,16 @@
 from django.db import models
 from django.conf import settings
 
-class Friendship(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='user_friendships', on_delete=models.CASCADE)
-    friend = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='friend_friendships', on_delete=models.CASCADE)
-    created_at = models.DateTimeField(auto_now_add=True)
+class FriendList(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    friends = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='friends', blank=True)
 
     class Meta:
-        unique_together = ['user', 'friend']
-        verbose_name = 'Friendship'
-        verbose_name_plural = 'Friendships'
+        verbose_name = 'Friend List'
+        verbose_name_plural = 'Friend Lists'
     
     def __str__(self):
-        return f"{self.user} is friends with {self.friend}"
+        return f"{self.user}'s friends"
 
 class FriendRequest(models.Model):
     STATUS_CHOICES = (

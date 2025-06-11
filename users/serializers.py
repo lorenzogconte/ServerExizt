@@ -5,22 +5,14 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'email', 'password']
-
-    def create(self, validated_data):
-        user = User(
-            username=validated_data['username'],
-            email=validated_data['email']
-        )
-        user.set_password(validated_data['password'])  # hashes password
-        user.save()
-        return user
+        extra_kwargs = {'password': {'write_only': True}}
 
 class ProfileSerializer(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)  # Nested serializer for the related user
+    user = UserSerializer()
 
     class Meta:
         model = Profile
-        fields = ['user', 'name', 'avatarUrl']
+        fields = ['user', 'name', 'avatar']
 
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()
