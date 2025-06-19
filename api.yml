@@ -1,997 +1,564 @@
-{
-    openapi: 3.0.4,
-    "info": {
-        "title": "Exizt API",
-        "description": "Put the slogan",
-        "version": "1.0"
-    },
-    "externalDocs": {
-      "description": "Find out  more about Swagger",
-      "url": "https://swagger.io"
-    },
-    "paths": {
-        "/profiles": {
-            "get": {
-                "summary": "Get the list of all existing profiles.",
-                "description": "Get the list of all existing profiles",
-                "operationId": "listProfiles",
-                "parameters": [
-                    {
-                        "name": "username",
-                        "in": "query",
-                        "description": "username",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "ordering",
-                        "in": "query",
-                        "description": "Which field to use when ordering the results.",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "page",
-                        "in": "query",
-                        "description": "A page number within the paginated result set.",
-                        "required": false,
-                        "type": "integer"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "schema": {
-                            "required": [
-                                "count",
-                                "results"
-                            ],
-                            "type": "object",
-                            "properties": {
-                                "count": {
-                                    "type": "integer"
-                                },
-                                "next": {
-                                    "type": "string",
-                                    "format": "uri",
-                                    "x-nullable": true
-                                },
-                                "previous": {
-                                    "type": "string",
-                                    "format": "uri",
-                                    "x-nullable": true
-                                },
-                                "results": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/definitions/ProfileShort"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "consumes": [
-                    "multipart/form-data"
-                ],
-                "tags": [
-                    "usuaris"
-                ]
-            },
-            "post": {
-                "operationId": "usuaris_create",
-                "description": "",
-                "parameters": [
-                    {
-                        "name": "username",
-                        "in": "formData",
-                        "required": true,
-                        "type": "string",
-                        "maxLength": 100,
-                        "minLength": 1
-                    },
-                    {
-                        "name": "nom",
-                        "in": "formData",
-                        "required": false,
-                        "type": "string",
-                        "maxLength": 100
-                    },
-                    {
-                        "name": "biografia",
-                        "in": "formData",
-                        "required": false,
-                        "type": "string",
-                        "maxLength": 250
-                    },
-                    {
-                        "name": "avatar",
-                        "in": "formData",
-                        "required": false,
-                        "type": "file",
-                        "x-nullable": true
-                    },
-                    {
-                        "name": "num_posts",
-                        "in": "formData",
-                        "required": false,
-                        "type": "integer",
-                        "maximum": 2147483647,
-                        "minimum": -2147483648
-                    },
-                    {
-                        "name": "num_comentaris",
-                        "in": "formData",
-                        "required": false,
-                        "type": "integer",
-                        "maximum": 2147483647,
-                        "minimum": -2147483648
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "",
-                        "schema": {
-                            "$ref": "#/definitions/Profile"
-                        }
-                    }
-                },
-                "consumes": [
-                    "multipart/form-data"
-                ],
-                "tags": [
-                    "usuaris"
-                ]
-            },
-            "parameters": []
-        },
-        "/usuaris/login/": {
-            "post": {
-                "operationId": "usuaris_login_profile",
-                "description": "",
-                "parameters": [
-                    {
-                        "name": "username",
-                        "in": "formData",
-                        "required": true,
-                        "type": "string",
-                        "maxLength": 100,
-                        "minLength": 1
-                    },
-                    {
-                        "name": "nom",
-                        "in": "formData",
-                        "required": false,
-                        "type": "string",
-                        "maxLength": 100
-                    },
-                    {
-                        "name": "biografia",
-                        "in": "formData",
-                        "required": false,
-                        "type": "string",
-                        "maxLength": 250
-                    },
-                    {
-                        "name": "avatar",
-                        "in": "formData",
-                        "required": false,
-                        "type": "file",
-                        "x-nullable": true
-                    },
-                    {
-                        "name": "num_posts",
-                        "in": "formData",
-                        "required": false,
-                        "type": "integer",
-                        "maximum": 2147483647,
-                        "minimum": -2147483648
-                    },
-                    {
-                        "name": "num_comentaris",
-                        "in": "formData",
-                        "required": false,
-                        "type": "integer",
-                        "maximum": 2147483647,
-                        "minimum": -2147483648
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "",
-                        "schema": {
-                            "$ref": "#/definitions/Profile"
-                        }
-                    }
-                },
-                "consumes": [
-                    "multipart/form-data"
-                ],
-                "tags": [
-                    "usuaris"
-                ]
-            },
-            "parameters": []
-        },
-        "/usuaris/signup/": {
-            "post": {
-                "operationId": "usuaris_signup_profile",
-                "description": "",
-                "parameters": [
-                    {
-                        "name": "username",
-                        "in": "formData",
-                        "required": true,
-                        "type": "string",
-                        "maxLength": 100,
-                        "minLength": 1
-                    },
-                    {
-                        "name": "nom",
-                        "in": "formData",
-                        "required": false,
-                        "type": "string",
-                        "maxLength": 100
-                    },
-                    {
-                        "name": "biografia",
-                        "in": "formData",
-                        "required": false,
-                        "type": "string",
-                        "maxLength": 250
-                    },
-                    {
-                        "name": "avatar",
-                        "in": "formData",
-                        "required": false,
-                        "type": "file",
-                        "x-nullable": true
-                    },
-                    {
-                        "name": "num_posts",
-                        "in": "formData",
-                        "required": false,
-                        "type": "integer",
-                        "maximum": 2147483647,
-                        "minimum": -2147483648
-                    },
-                    {
-                        "name": "num_comentaris",
-                        "in": "formData",
-                        "required": false,
-                        "type": "integer",
-                        "maximum": 2147483647,
-                        "minimum": -2147483648
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "",
-                        "schema": {
-                            "$ref": "#/definitions/Profile"
-                        }
-                    }
-                },
-                "consumes": [
-                    "multipart/form-data"
-                ],
-                "tags": [
-                    "usuaris"
-                ]
-            },
-            "parameters": []
-        },
-        "/usuaris/{id}/": {
-            "get": {
-                "operationId": "usuaris_read",
-                "description": "",
-                "parameters": [],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "schema": {
-                            "$ref": "#/definitions/Profile"
-                        }
-                    }
-                },
-                "consumes": [
-                    "multipart/form-data"
-                ],
-                "tags": [
-                    "usuaris"
-                ]
-            },
-            "put": {
-                "operationId": "usuaris_update",
-                "description": "",
-                "parameters": [
-                    {
-                        "name": "username",
-                        "in": "formData",
-                        "required": true,
-                        "type": "string",
-                        "maxLength": 100,
-                        "minLength": 1
-                    },
-                    {
-                        "name": "nom",
-                        "in": "formData",
-                        "required": false,
-                        "type": "string",
-                        "maxLength": 100
-                    },
-                    {
-                        "name": "biografia",
-                        "in": "formData",
-                        "required": false,
-                        "type": "string",
-                        "maxLength": 250
-                    },
-                    {
-                        "name": "avatar",
-                        "in": "formData",
-                        "required": false,
-                        "type": "file",
-                        "x-nullable": true
-                    },
-                    {
-                        "name": "num_posts",
-                        "in": "formData",
-                        "required": false,
-                        "type": "integer",
-                        "maximum": 2147483647,
-                        "minimum": -2147483648
-                    },
-                    {
-                        "name": "num_comentaris",
-                        "in": "formData",
-                        "required": false,
-                        "type": "integer",
-                        "maximum": 2147483647,
-                        "minimum": -2147483648
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "schema": {
-                            "$ref": "#/definitions/Profile"
-                        }
-                    }
-                },
-                "consumes": [
-                    "multipart/form-data"
-                ],
-                "tags": [
-                    "usuaris"
-                ]
-            },
-            "patch": {
-                "operationId": "usuaris_partial_update",
-                "description": "",
-                "parameters": [
-                    {
-                        "name": "username",
-                        "in": "formData",
-                        "required": true,
-                        "type": "string",
-                        "maxLength": 100,
-                        "minLength": 1
-                    },
-                    {
-                        "name": "nom",
-                        "in": "formData",
-                        "required": false,
-                        "type": "string",
-                        "maxLength": 100
-                    },
-                    {
-                        "name": "biografia",
-                        "in": "formData",
-                        "required": false,
-                        "type": "string",
-                        "maxLength": 250
-                    },
-                    {
-                        "name": "avatar",
-                        "in": "formData",
-                        "required": false,
-                        "type": "file",
-                        "x-nullable": true
-                    },
-                    {
-                        "name": "num_posts",
-                        "in": "formData",
-                        "required": false,
-                        "type": "integer",
-                        "maximum": 2147483647,
-                        "minimum": -2147483648
-                    },
-                    {
-                        "name": "num_comentaris",
-                        "in": "formData",
-                        "required": false,
-                        "type": "integer",
-                        "maximum": 2147483647,
-                        "minimum": -2147483648
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "schema": {
-                            "$ref": "#/definitions/Profile"
-                        }
-                    }
-                },
-                "consumes": [
-                    "multipart/form-data"
-                ],
-                "tags": [
-                    "usuaris"
-                ]
-            },
-            "delete": {
-                "operationId": "usuaris_delete",
-                "description": "",
-                "parameters": [],
-                "responses": {
-                    "204": {
-                        "description": ""
-                    }
-                },
-                "consumes": [
-                    "multipart/form-data"
-                ],
-                "tags": [
-                    "usuaris"
-                ]
-            },
-            "parameters": [
-                {
-                    "name": "id",
-                    "in": "path",
-                    "description": "A unique integer value identifying this Profile.",
-                    "required": true,
-                    "type": "integer"
-                }
-            ]
-        },
-        "/usuaris/{user_id}/friends/": {
-            "get": {
-                "operationId": "usuaris_friends_list",
-                "description": "",
-                "parameters": [],
-                "responses": {
-                    "200": {
-                        "description": ""
-                    }
-                },
-                "tags": [
-                    "usuaris"
-                ]
-            },
-            "parameters": [
-                {
-                    "name": "user_id",
-                    "in": "path",
-                    "required": true,
-                    "type": "string"
-                }
-            ]
-        }
-    },
-                "parameters": [
-                    {
-                        "name": "ordering",
-                        "in": "query",
-                        "description": "Which field to use when ordering the results.",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "page",
-                        "in": "query",
-                        "description": "A page number within the paginated result set.",
-                        "required": false,
-                        "type": "integer"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "schema": {
-                            "required": [
-                                "count",
-                                "results"
-                            ],
-                            "type": "object",
-                            "properties": {
-                                "count": {
-                                    "type": "integer"
-                                },
-                                "next": {
-                                    "type": "string",
-                                    "format": "uri",
-                                    "x-nullable": true
-                                },
-                                "previous": {
-                                    "type": "string",
-                                    "format": "uri",
-                                    "x-nullable": true
-                                },
-                                "results": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/definitions/CommunityList"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "tags": [
-                    "comunitats"
-                ]
-            },
-            "post": {
-                "operationId": "comunitats_create",
-                "description": "",
-                "parameters": [
-                    {
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/CommunityCreate"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "",
-                        "schema": {
-                            "$ref": "#/definitions/CommunityCreate"
-                        }
-                    }
-                },
-                "tags": [
-                    "comunitats"
-                ]
-            },
-            "parameters": []
-        },
-        "/comunitats/{id}/": {
-            "get": {
-                "operationId": "comunitats_read",
-                "description": "",
-                "parameters": [],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "schema": {
-                            "$ref": "#/definitions/Community"
-                        }
-                    }
-                },
-                "tags": [
-                    "comunitats"
-                ]
-            },
-            "put": {
-                "operationId": "comunitats_update",
-                "description": "",
-                "parameters": [
-                    {
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/Community"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "schema": {
-                            "$ref": "#/definitions/Community"
-                        }
-                    }
-                },
-                "tags": [
-                    "comunitats"
-                ]
-            },
-            "patch": {
-                "operationId": "comunitats_partial_update",
-                "description": "",
-                "parameters": [
-                    {
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/Community"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "schema": {
-                            "$ref": "#/definitions/Community"
-                        }
-                    }
-                },
-                "tags": [
-                    "comunitats"
-                ]
-            },
-            "delete": {
-                "operationId": "comunitats_delete",
-                "description": "",
-                "parameters": [],
-                "responses": {
-                    "204": {
-                        "description": ""
-                    }
-                },
-                "tags": [
-                    "comunitats"
-                ]
-            },
-            "parameters": [
-                {
-                    "name": "id",
-                    "in": "path",
-                    "description": "A unique value identifying this community.",
-                    "required": true,
-                    "type": "string"
-                }
-            ]
-        },
-        "/friendships/add_friend/": {
-            "post": {
-                "operationId": "friendships_add_friend",
-                "description": "",
-                "parameters": [],
-                "responses": {
-                    "201": {
-                        "description": ""
-                    }
-                },
-                "consumes": [
-                    "multipart/form-data"
-                ],
-                "tags": [
-                    "friendships"
-                ]
-            },
-            "parameters": []
-        },
-        "/participants/": {
-            "get": {
-                "operationId": "participants_list",
-                "description": "",
-                "parameters": [
-                    {
-                        "name": "ordering",
-                        "in": "query",
-                        "description": "Which field to use when ordering the results.",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "page",
-                        "in": "query",
-                        "description": "A page number within the paginated result set.",
-                        "required": false,
-                        "type": "integer"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": ""
-                    }
-                },
-                "tags": [
-                    "participants"
-                ]
-            },
-            "post": {
-                "operationId": "participants_create",
-                "description": "",
-                "parameters": [],
-                "responses": {
-                    "201": {
-                        "description": ""
-                    }
-                },
-                "tags": [
-                    "participants"
-                ]
-            },
-            "parameters": []
-        },
-        "/participants/inscriure/": {
-            "post": {
-                "operationId": "participants_incriure",
-                "description": "",
-                "parameters": [],
-                "responses": {
-                    "201": {
-                        "description": ""
-                    }
-                },
-                "tags": [
-                    "participants"
-                ]
-            },
-            "parameters": []
-        },
-        "/participants/{id}/": {
-            "get": {
-                "operationId": "participants_read",
-                "description": "",
-                "parameters": [],
-                "responses": {
-                    "200": {
-                        "description": ""
-                    }
-                },
-                "tags": [
-                    "participants"
-                ]
-            },
-            "put": {
-                "operationId": "participants_update",
-                "description": "",
-                "parameters": [],
-                "responses": {
-                    "200": {
-                        "description": ""
-                    }
-                },
-                "tags": [
-                    "participants"
-                ]
-            },
-            "patch": {
-                "operationId": "participants_partial_update",
-                "description": "",
-                "parameters": [],
-                "responses": {
-                    "200": {
-                        "description": ""
-                    }
-                },
-                "tags": [
-                    "participants"
-                ]
-            },
-            "delete": {
-                "operationId": "participants_delete",
-                "description": "",
-                "parameters": [],
-                "responses": {
-                    "204": {
-                        "description": ""
-                    }
-                },
-                "tags": [
-                    "participants"
-                ]
-            },
-            "parameters": [
-                {
-                    "name": "id",
-                    "in": "path",
-                    "description": "A unique integer value identifying this participant.",
-                    "required": true,
-                    "type": "integer"
-                }
-            ]
-        },
-    "definitions": {
-        "CommunityList": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "title": "Id",
-                    "type": "string",
-                    "readOnly": true,
-                    "minLength": 1
-                },
-                "name": {
-                    "title": "Name",
-                    "type": "string",
-                    "readOnly": true,
-                    "minLength": 1,
-                    "x-nullable": true
-                },
-                "subscribers": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    },
-                    "readOnly": true,
-                    "uniqueItems": true
-                },
-                "numSubscribers": {
-                    "title": "Numsubscribers",
-                    "type": "string",
-                    "readOnly": true
-                },
-                "numPosts": {
-                    "title": "NumPosts",
-                    "type": "integer",
-                    "readOnly": true
-                },
-                "numComments": {
-                    "title": "NumComments",
-                    "type": "integer",
-                    "readOnly": true
-                }
-            }
-        },
-        "CommunityCreate": {
-            "required": [
-                "id"
-            ],
-            "type": "object",
-            "properties": {
-                "id": {
-                    "title": "Id",
-                    "type": "string",
-                    "maxLength": 100,
-                    "minLength": 1
-                },
-                "name": {
-                    "title": "Name",
-                    "type": "string",
-                    "maxLength": 100,
-                    "x-nullable": true
-                }
-            }
-        },
-        "Community": {
-            "required": [
-                "id"
-            ],
-            "type": "object",
-            "properties": {
-                "id": {
-                    "title": "Id",
-                    "type": "string",
-                    "maxLength": 100,
-                    "minLength": 1
-                },
-                "name": {
-                    "title": "Name",
-                    "type": "string",
-                    "maxLength": 100,
-                    "x-nullable": true
-                },
-            }
-        },
-        "ProfileShort": {
-            "required": [
-                "username"
-            ],
-            "type": "object",
-            "properties": {
-                "id": {
-                    "title": "ID",
-                    "type": "integer",
-                    "readOnly": true
-                },
-                "user_info": {
-                    "title": "User info",
-                    "type": "string",
-                    "readOnly": true
-                },
-                "username": {
-                    "title": "Username",
-                    "type": "string",
-                    "maxLength": 100,
-                    "minLength": 1
-                },
-                "nom": {
-                    "title": "Nom",
-                    "type": "string",
-                    "maxLength": 100
-                },
-                "biografia": {
-                    "title": "Biografia",
-                    "type": "string",
-                    "maxLength": 250
-                },
-                "avatar": {
-                    "title": "Avatar",
-                    "type": "string",
-                    "readOnly": true,
-                    "x-nullable": true,
-                    "format": "uri"
-                },
-                "data_alta": {
-                    "title": "Data alta",
-                    "type": "string",
-                    "format": "date-time",
-                    "readOnly": true
-                },
-                "num_posts": {
-                    "title": "Num posts",
-                    "type": "integer",
-                    "maximum": 2147483647,
-                    "minimum": -2147483648
-                },
-                "num_comentaris": {
-                    "title": "Num comentaris",
-                    "type": "integer",
-                    "maximum": 2147483647,
-                    "minimum": -2147483648
-                }
-            }
-        },
-        "Profile": {
-            "required": [
-                "username"
-            ],
-            "type": "object",
-            "properties": {
-                "id": {
-                    "title": "ID",
-                    "type": "integer",
-                    "readOnly": true
-                },
-                "user_info": {
-                    "title": "User info",
-                    "type": "string",
-                    "readOnly": true
-                },
-                "username": {
-                    "title": "Username",
-                    "type": "string",
-                    "maxLength": 100,
-                    "minLength": 1
-                },
-                "nom": {
-                    "title": "Nom",
-                    "type": "string",
-                    "maxLength": 100
-                },
-                "biografia": {
-                    "title": "Biografia",
-                    "type": "string",
-                    "maxLength": 250
-                },
-                "avatar": {
-                    "title": "Avatar",
-                    "type": "string",
-                    "readOnly": true,
-                    "x-nullable": true,
-                    "format": "uri"
-                },
-                "data_alta": {
-                    "title": "Data alta",
-                    "type": "string",
-                    "format": "date-time",
-                    "readOnly": true
-                },
-                "num_posts": {
-                    "title": "Num posts",
-                    "type": "integer",
-                    "maximum": 2147483647,
-                    "minimum": -2147483648
-                },
-                "num_comentaris": {
-                    "title": "Num comentaris",
-                    "type": "integer",
-                    "maximum": 2147483647,
-                    "minimum": -2147483648
-                }
-            }
-        }
-    }
-}
+openapi: 3.0.3
+info:
+  title: ServerExizt API
+  description: API for the Exizt application to manage friendships and competitions
+  version: 1.0.0
+  
+servers:
+  - url: http://localhost:8000
+    description: Local development server
+  
+components:
+  securitySchemes:
+    TokenAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Format - "Token {your_token}"
+  
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        email:
+          type: string
+    
+    Profile:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/User'
+        name:
+          type: string
+        avatar:
+          type: string
+          format: uri
+          
+    FriendRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+        sender:
+          $ref: '#/components/schemas/User'
+        receiver:
+          $ref: '#/components/schemas/User'
+        status:
+          type: string
+          enum: [pending, accepted, rejected]
+        created_at:
+          type: string
+          format: date-time
+          
+    Competition:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        creator:
+          $ref: '#/components/schemas/User'
+        start_date:
+          type: string
+          format: date-time
+        end_date:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum: [upcoming, active, completed, cancelled]
+        winner:
+          $ref: '#/components/schemas/User'
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          
+    Participant:
+      type: object
+      properties:
+        id:
+          type: integer
+        user:
+          $ref: '#/components/schemas/User'
+        competition:
+          $ref: '#/components/schemas/Competition'
+        joined_at:
+          type: string
+          format: date-time
+        position:
+          type: integer
+          nullable: true
+        average_daily_usage:
+          type: number
+          format: float
+          nullable: true
+    
+    CompetitionInvitation:
+      type: object
+      properties:
+        id:
+          type: integer
+        competition:
+          $ref: '#/components/schemas/Competition'
+        sender:
+          $ref: '#/components/schemas/User'
+        receiver:
+          $ref: '#/components/schemas/User'
+        status:
+          type: string
+          enum: [pending, accepted, declined, expired]
+        created_at:
+          type: string
+          format: date-time
+
+security:
+  - TokenAuth: []
+
+paths:
+  # User Authentication
+  /signup/:
+    post:
+      security: []
+      tags:
+        - User
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  format: password
+      responses:
+        201:
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                  user:
+                    $ref: '#/components/schemas/User'
+        400:
+          description: Bad request
+
+  /login/:
+    post:
+      security: []
+      tags:
+        - User
+      summary: Login user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+                  format: password
+      responses:
+        200:
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                  user:
+                    $ref: '#/components/schemas/Profile'
+        401:
+          description: Invalid credentials
+
+  # User Profile
+  /is-authenticated/:
+    get:
+      tags:
+        - User
+      summary: Check if user is authenticated
+      responses:
+        200:
+          description: User is authenticated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /profile/:
+    get:
+      tags:
+        - User
+      summary: Get user profile
+      responses:
+        200:
+          description: Profile retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+
+  /update-profile/:
+    put:
+      tags:
+        - User
+      summary: Update user profile
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                name:
+                  type: string
+                avatar:
+                  type: string
+                  format: binary
+      responses:
+        200:
+          description: Profile updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+        400:
+          description: Bad request
+
+  /delete-user/:
+    delete:
+      tags:
+        - User
+      summary: Delete user account
+      responses:
+        204:
+          description: User deleted
+
+  # Friendships
+  /send-request/:
+    post:
+      tags:
+        - Friendships
+      summary: Send friend request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                user_id:
+                  type: integer
+      responses:
+        201:
+          description: Friend request sent
+        400:
+          description: Bad request
+        404:
+          description: User not found
+
+  /handle-request/:
+    post:
+      tags:
+        - Friendships
+      summary: Accept or reject friend request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                request_id:
+                  type: integer
+                action:
+                  type: string
+                  enum: [accept, reject]
+      responses:
+        200:
+          description: Request handled
+        400:
+          description: Bad request
+        404:
+          description: Friend request not found
+
+  /friend-requests/:
+    get:
+      tags:
+        - Friendships
+      summary: Get all friend requests
+      responses:
+        200:
+          description: Friend requests retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  sent_requests:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/FriendRequest'
+                  received_requests:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/FriendRequest'
+
+  /friendships/:
+    get:
+      tags:
+        - Friendships
+      summary: Get all friends
+      responses:
+        200:
+          description: Friends retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Profile'
+
+  /delete-friend/:
+    post:
+      tags:
+        - Friendships
+      summary: Delete a friendship
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                friend_id:
+                  type: integer
+      responses:
+        200:
+          description: Friendship deleted
+        400:
+          description: Bad request
+        404:
+          description: Friendship not found
+
+  # Competitions
+  /competitions/:
+    get:
+      tags:
+        - Competitions
+      summary: Get all user's competitions
+      responses:
+        200:
+          description: Competitions retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Competition'
+
+  /competitions/create/:
+    post:
+      tags:
+        - Competitions
+      summary: Create a new competition
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                start_date:
+                  type: string
+                  format: date-time
+                end_date:
+                  type: string
+                  format: date-time
+      responses:
+        201:
+          description: Competition created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Competition'
+        400:
+          description: Bad request
+
+  /competitions/active/:
+    get:
+      tags:
+        - Competitions
+      summary: Get active competitions
+      responses:
+        200:
+          description: Active competitions retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Competition'
+
+  /competitions/{competition_id}/:
+    get:
+      tags:
+        - Competitions
+      summary: Get competition details
+      parameters:
+        - name: competition_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Competition details retrieved
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Competition'
+                  - type: object
+                    properties:
+                      participants:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Participant'
+        403:
+          description: Access forbidden
+        404:
+          description: Competition not found
+
+  /competitions/{competition_id}/participants/:
+    get:
+      tags:
+        - Competitions
+      summary: Get competition participants
+      parameters:
+        - name: competition_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Participants retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Participant'
+        403:
+          description: Access forbidden
+        404:
+          description: Competition not found
+
+  /competitions/{competition_id}/leave/:
+    post:
+      tags:
+        - Competitions
+      summary: Leave competition
+      parameters:
+        - name: competition_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Left competition
+        400:
+          description: Cannot leave (creator or not participant)
+        404:
+          description: Competition not found
+
+  /competitions/invitations/:
+    get:
+      tags:
+        - Competitions
+      summary: Get competition invitations
+      responses:
+        200:
+          description: Invitations retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CompetitionInvitation'
+
+  /competitions/invitations/send/:
+    post:
+      tags:
+        - Competitions
+      summary: Send competition invitation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                competition_id:
+                  type: integer
+                receiver_id:
+                  type: integer
+      responses:
+        201:
+          description: Invitation sent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompetitionInvitation'
+        400:
+          description: Bad request
+
+  /competitions/invitations/handle/:
+    post:
+      tags:
+        - Competitions
+      summary: Accept or decline invitation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                invitation_id:
+                  type: integer
+                accept:
+                  type: boolean
+      responses:
+        200:
+          description: Invitation handled
+        400:
+          description: Bad request

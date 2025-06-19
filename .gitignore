@@ -1,2 +1,64 @@
+# Virtual Environment
 .venv
+venv/
+ENV/
+
+# Database
 db.sqlite3
+db.sqlite3-journal
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Django
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+local_settings.py
+media/
+staticfiles/
+*.log
+
+# Deployment
+*.pot
+*.mo
+
+# Testing and coverage
+test_calls.txt
+.coverage
+htmlcov/
+.tox/
+.pytest_cache/
+coverage.xml
+*.cover
+
+# Distribution / packaging
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# IDE / Editor
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
