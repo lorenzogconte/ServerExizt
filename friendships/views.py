@@ -56,7 +56,6 @@ def handle_friend_request(request):
     if action not in ['accept', 'reject']:
         return Response({'error': 'Action must be either "accept" or "reject"'}, status=status.HTTP_400_BAD_REQUEST)
     
-    # Use service to get and update request
     friend_request = FriendshipService.get_friend_request(request_id, request.user)
 
     print(f"Found friend request: {friend_request}")

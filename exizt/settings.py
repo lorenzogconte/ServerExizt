@@ -23,7 +23,7 @@ SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
-ALLOWED_HOSTS = env.list('ALLOWED_HOST')
+ALLOWED_HOSTS = ['*', '127.0.0.1', '10.0.2.2', 'localhost', 'serverexizt.flycast', '172.20.10.2']
 CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS', default=[])
 
 INSTALLED_APPS = [
@@ -74,6 +74,14 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'exizt.wsgi.application'
 
+CORS_ALLOW_ALL_ORIGINS = True  # For development only!
+
+# Or for more security, specify allowed origins:
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8000",
+    "http://10.0.2.2:8000",
+    "http://172.20.10.2:8000",
+]
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases

@@ -23,7 +23,7 @@ def signup(request):
         )
         UserService.create_profile(
             user=user,
-            name=request.data.name,
+            name=request.data['name'],
         )
         token = UserService.create_auth_token(user)
         return Response(

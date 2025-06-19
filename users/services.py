@@ -1,9 +1,6 @@
 from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
 from .models import User, Profile
-import cloudinary
-import cloudinary.uploader
-import cloudinary.api
 from django.conf import settings
 
 class UserService:

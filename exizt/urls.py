@@ -4,6 +4,10 @@ from users import views as user_views
 from friendships import views as friendship_views
 from competitions import views as competition_views
 
+import os
+
+print(f"ALLOWED_HOSTS from env: {os.environ.get('ALLOWED_HOSTS')}")
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     # User URLs
@@ -30,4 +34,5 @@ urlpatterns = [
     path('competitions/invitations/', competition_views.get_invitations, name='get_competition_invitations'),
     path('competitions/invitations/send/', competition_views.send_invitation, name='send_competition_invitation'),
     path('competitions/invitations/handle/', competition_views.handle_invitation, name='handle_competition_invitation'),
+    path('competitions/screen-time/update/', competition_views.update_screen_time, name='update_screen_time'),
 ]

@@ -30,25 +30,29 @@ def get_future_competitions(request):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def get_competition_detail(request, competition_id):
-    """Get detailed information about a specific competition"""
     try:
         competition = Competition.objects.get(id=competition_id)
         
         # Check if user is a participant
         if not Participant.objects.filter(competition=competition, user=request.user).exists():
             return Response({"error": "You don't have access to this competition"}, 
-                           status=status.HTTP_403_FORBIDDEN)
+                          status=status.HTTP_403_FORBIDDEN)
         
         # Get competition data
         comp_serializer = CompetitionDetailSerializer(competition)
-        
-        # Get participants data
-        participants = Participant.objects.filter(competition=competition).order_by('position')
-        part_serializer = ParticipantSerializer(participants, many=True)
-        
-        # Combine data
         response_data = comp_serializer.data
-        response_data['participants'] = part_serializer.data
+        
+        # Get leaderboard using service method (most efficient approach)
+        ranked, unranked = CompetitionService.get_competition_leaderboard(competition)
+        all_participants = list(ranked) + list(unranked)
+        
+        # Serialize participants
+        part_serializer = ParticipantSerializer(all_participants, many=True)
+        response_data['leaderboard'] = part_serializer.data
+        
+        # Add summary stats
+        response_data['total_participants'] = len(all_participants)
+        response_data['ranked_participants'] = ranked.count()
         
         return Response(response_data, status=status.HTTP_200_OK)
     except Competition.DoesNotExist:
@@ -184,3 +188,64 @@ def leave_competition(request, competition_id):
         )
     except Competition.DoesNotExist:
         return Response({"error": "Competition not found"}, status=status.HTTP_404_NOT_FOUND)
+    
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def update_screen_time(request):
+    """Update user's screen time and recalculate competition rankings"""
+    screen_time_minutes = request.data.get('screen_time_minutes')
+    date_str = request.data.get('date', timezone.now().date().isoformat())
+    
+    if not screen_time_minutes:
+        return Response(
+            {"error": "Screen time value is required"}, 
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    
+    try:
+        screen_time_minutes = float(screen_time_minutes)
+        if screen_time_minutes < 0:
+            raise ValueError("Screen time must be positive")
+    except ValueError as e:
+        return Response(
+            {"error": f"Invalid screen time value: {str(e)}"}, 
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    
+    try:
+        date = timezone.datetime.fromisoformat(date_str).date()
+    except ValueError:
+        return Response(
+            {"error": "Invalid date format. Use ISO format (YYYY-MM-DD)"}, 
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    
+    # Update screen time and recalculate rankings
+    updated_competitions = CompetitionService.update_user_screen_time(
+        user=request.user,
+        date=date,
+        screen_time_minutes=screen_time_minutes
+    )
+    
+    # Return the updated competitions with rankings
+    competitions_data = []
+    
+    for competition in updated_competitions:
+        comp_data = CompetitionListSerializer(competition).data
+        
+        # Get user's ranking
+        try:
+            participant = Participant.objects.get(user=request.user, competition=competition)
+            comp_data['user_position'] = participant.position
+            comp_data['user_screen_time'] = participant.average_daily_usage
+        except Participant.DoesNotExist:
+            comp_data['user_position'] = None
+            comp_data['user_screen_time'] = None
+        
+        competitions_data.append(comp_data)
+    
+    return Response({
+        "success": "Screen time updated successfully",
+        "updated_competitions": competitions_data
+    }, status=status.HTTP_200_OK)

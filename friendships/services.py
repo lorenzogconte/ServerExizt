@@ -26,6 +26,20 @@ class FriendshipService:
         return friend_list.friends.all()
     
     @staticmethod
+    def get_or_create_friend_list(user):
+        """Get or create a friend list for a user and return the FriendList object"""
+        friend_list, created = FriendList.objects.get_or_create(user=user)
+        return friend_list
+
+    @staticmethod
+    def get_friend_request(request_id, user):
+        """Get a friend request by ID where the user is the receiver"""
+        try:
+            return FriendRequest.objects.get(id=request_id, receiver=user)
+        except FriendRequest.DoesNotExist:
+            return None
+    
+    @staticmethod
     def are_friends(user1, user2):
         """Check if two users are friends"""
         try:

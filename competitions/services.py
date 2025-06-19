@@ -123,3 +123,101 @@ class CompetitionService:
             return invitation, None
         except CompetitionInvitation.DoesNotExist:
             return None, "Invitation not found or already handled"
+        
+    @staticmethod
+    def get_competition_leaderboard(competition):
+        """
+        Get pre-ordered participants for a competition's leaderboard
+        This doesn't recalculate rankings - just returns current state
+        """
+        # Get participants with screen time, ordered by position
+        ranked = Participant.objects.filter(
+            competition=competition,
+            average_daily_usage__isnull=False,
+            position__isnull=False
+        ).select_related('user').order_by('position')
+        
+        # Get participants without screen time
+        unranked = Participant.objects.filter(
+            competition=competition
+        ).filter(
+            Q(average_daily_usage__isnull=True) | Q(position__isnull=True)
+        ).select_related('user')
+        
+        # Use iterator instead of list for better memory efficiency
+        return ranked, unranked
+        
+    @staticmethod
+    def update_user_screen_time(user, date, screen_time_minutes):
+        """
+        Update a user's screen time and recalculate rankings in all active competitions
+        
+        Args:
+            user: The user whose screen time is being updated
+            date: The date for this screen time data
+            screen_time_minutes: Screen time in minutes
+        
+        Returns:
+            List of competitions where ranking was updated
+        """
+        # Get all active competitions where the user is a participant
+        now = timezone.now()
+        active_competitions = Competition.objects.filter(
+            participant__user=user,
+            start_date__lte=now,
+            end_date__gte=now,
+            status='active'
+        ).distinct()
+        
+        updated_competitions = []
+        
+        for competition in active_competitions:
+            # Get participant record for this user in this competition
+            participant = Participant.objects.get(user=user, competition=competition)
+            
+            # Update average daily usage (you might want a more sophisticated algorithm here)
+            if participant.average_daily_usage is None:
+                participant.average_daily_usage = screen_time_minutes
+            else:
+                # Simple moving average (could be improved with more historical data)
+                participant.average_daily_usage = (participant.average_daily_usage + screen_time_minutes) / 2
+            
+            participant.save()
+            updated_competitions.append(competition)
+            
+            # Recalculate rankings for all participants in this competition
+            CompetitionService.recalculate_competition_rankings(competition)
+        
+        return updated_competitions
+
+    @staticmethod
+    def recalculate_competition_rankings(competition):
+        """
+        Recalculate rankings for all participants in a competition.
+        Lower screen time means better ranking (lower position number).
+        
+        Args:
+            competition: The competition to recalculate rankings for
+        """
+        # Get all participants ordered by average_daily_usage (ascending - less is better)
+        participants = Participant.objects.filter(
+            competition=competition,
+            average_daily_usage__isnull=False
+        ).order_by('average_daily_usage')
+        
+        # Update positions
+        for i, participant in enumerate(participants, 1):
+            participant.position = i
+            participant.save()
+        
+        # Handle participants with no data yet (place them at the end)
+        participants_no_data = Participant.objects.filter(
+            competition=competition,
+            average_daily_usage__isnull=True
+        )
+        
+        last_position = participants.count() + 1
+        
+        for participant in participants_no_data:
+            participant.position = last_position
+            participant.save()
