@@ -1,4 +1,4 @@
-# fly.toml app configuration file generated for serverexizt on 2025-10-04T18:31:37+02:00
+# fly.toml app configuration file generated for serverexizt on 2025-10-04T20:29:24+02:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
@@ -13,8 +13,12 @@ console_command = '/code/manage.py shell'
   release_command = 'python manage.py migrate --noinput'
 
 [env]
-  DATABASE_URL = "sqlite:////mnt/serverexiztdb/db.sqlite3"
+  DATABASE_URL = 'sqlite:////data/db.sqlite3'
   PORT = '8000'
+
+[[mounts]]
+  source = 'data'
+  destination = '/data'
 
 [http_service]
   internal_port = 8000

@@ -89,7 +89,7 @@ CORS_ALLOWED_ORIGINS = [
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': '/mnt/serverexiztdb/db.sqlite3',  # This path matches your Fly.io volume mount
+        'NAME': '/data', 
     }
 }
 
