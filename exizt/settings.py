@@ -87,7 +87,10 @@ CORS_ALLOWED_ORIGINS = [
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    'default': env.db()
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': '/mnt/serverexiztdb/db.sqlite3',  # This path matches your Fly.io volume mount
+    }
 }
 
 # Password validation
