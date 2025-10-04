@@ -87,7 +87,7 @@ CORS_ALLOWED_ORIGINS = [
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    'default': "sqlite:////data/db.sqlite3"
+    "default": env.db_url("DATABASE_URL", default="sqlite:////data/db.sqlite3"),
 }
 
 # Password validation
