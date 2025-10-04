@@ -1,10 +1,10 @@
-# fly.toml app configuration file generated for serverexizt on 2025-10-04T03:16:08+02:00
+# fly.toml app configuration file generated for serverexizt on 2025-10-04T18:31:37+02:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
 app = 'serverexizt'
-primary_region = 'cdg'
+primary_region = 'fra'
 console_command = '/code/manage.py shell'
 
 [build]
@@ -13,6 +13,7 @@ console_command = '/code/manage.py shell'
   release_command = 'python manage.py migrate --noinput'
 
 [env]
+  DATABASE_URL = "sqlite:////mnt/serverexiztdb/db.sqlite3"
   PORT = '8000'
 
 [http_service]
@@ -31,7 +32,3 @@ console_command = '/code/manage.py shell'
 [[statics]]
   guest_path = '/code/static'
   url_prefix = '/static/'
-
-[mounts]
-  source="serverexiztdb"
-  destination="/mnt/serverexiztdb"
