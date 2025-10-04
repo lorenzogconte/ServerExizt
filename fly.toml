@@ -1,4 +1,4 @@
-# fly.toml app configuration file generated for serverexizt on 2025-05-17T01:02:11+02:00
+# fly.toml app configuration file generated for serverexizt on 2025-10-04T03:16:08+02:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
@@ -31,3 +31,7 @@ console_command = '/code/manage.py shell'
 [[statics]]
   guest_path = '/code/static'
   url_prefix = '/static/'
+
+[mounts]
+  source="serverexiztdb"
+  destination="/mnt/serverexiztdb"

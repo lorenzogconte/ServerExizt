@@ -2,7 +2,9 @@
 
 name: Fly Deploy
 on:
-  workflow_dispatch: # allows manual triggering of the workflow
+  push:
+    branches:
+      - main
 jobs:
   deploy:
     name: Deploy app
