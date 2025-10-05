@@ -1,4 +1,4 @@
-from django.test import TestCase
+from django.test import TestCase, TransactionTestCase
 from django.urls import reverse
 from django.utils import timezone
 from rest_framework.test import APITestCase, APIClient
@@ -13,7 +13,7 @@ from friendships.models import FriendList
 
 User = get_user_model()
 
-class CompetitionModelsTest(TestCase):
+class CompetitionModelsTest(TransactionTestCase):
     """Tests for competition models"""
     
     def setUp(self):

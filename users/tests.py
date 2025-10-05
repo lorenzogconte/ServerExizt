@@ -78,8 +78,12 @@ class UserServiceTest(TestCase):
         self.assertEqual(profile.user, user)
         self.assertEqual(profile.name, user.username)
         
-        # Test with custom name
-        profile2 = UserService.create_profile(user, name='Custom Name')
+        user2 = UserService.create_user(
+            username='anotheruser',
+            email='another@example.com',
+            password='testpassword123'
+        )
+        profile2 = UserService.create_profile(user2, name='Custom Name')
         self.assertEqual(profile2.name, 'Custom Name')
         
     def test_create_auth_token(self):
@@ -208,7 +212,7 @@ class UserServiceTest(TestCase):
         
         # Verify user and profile are deleted
         self.assertFalse(User.objects.filter(id=user.id).exists())
-        self.assertFalse(Profile.objects.filter(user=user).exists())
+        self.assertFalse(Profile.objects.filter(user_id=user.id).exists())
 
 class ViewTests(APITestCase):
     """Tests for the API views"""
@@ -235,6 +239,7 @@ class ViewTests(APITestCase):
         # Test successful signup
         data = {
             'username': 'testuser',
+            'name': 'Test User',
             'email': 'test@example.com',
             'password': 'testpassword123'
         }
@@ -246,6 +251,7 @@ class ViewTests(APITestCase):
         # Test duplicate username
         data = {
             'username': 'testuser',
+            'name': 'Another User',
             'email': 'another@example.com',
             'password': 'testpassword123'
         }
@@ -330,13 +336,13 @@ class ViewTests(APITestCase):
         
         # Update name
         data = {'name': 'Updated Name'}
-        response = self.client.put(self.update_profile_url, data, format='json')
+        response = self.client.put(self.update_profile_url, data, format='multipart')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['name'], 'Updated Name')
         
         # Update username
         data = {'username': 'updateduser'}
-        response = self.client.put(self.update_profile_url, data, format='json')
+        response = self.client.put(self.update_profile_url, data, format='multipart')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         
         # Update avatar (multipart form)
