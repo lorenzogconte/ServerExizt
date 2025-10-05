@@ -22,9 +22,12 @@ RUN set -ex && \
     rm -rf /root/.cache/
 COPY . /code
 
-ENV SECRET_KEY "rtgpfIeQ8RWGXUU3UuKywhFoZIHL93luRleQ6YUn2n9zVhNufZ"
+ENV SECRET_KEY "JuLalX8wDl2sPm2krwLpvMFDssmX1CGTuXnQSMcmsIKuKlgQEa"
 RUN python manage.py collectstatic --noinput
 
 EXPOSE 8000
 
-CMD ["gunicorn","--bind",":8000","--workers","2","exizt.wsgi"]
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
+#CMD ["gunicorn","--bind",":8000","--workers","2","exizt.wsgi"]
