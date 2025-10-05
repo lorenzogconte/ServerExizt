@@ -12,6 +12,7 @@ console_command = '/code/manage.py shell'
 [deploy]
 
 [env]
+  ENVIRONMENT=production
   DATABASE_URL = 'sqlite:////data/db.sqlite3'
   PORT = '8000'
 
