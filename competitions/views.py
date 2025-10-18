@@ -90,6 +90,21 @@ def create_competition(request):
     
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(['PUT'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def update_competition(request, competition_id):
+    try:
+        competition = Competition.objects.get(id=competition_id)
+        if competition.creator != request.user:
+            return Response({"error": "Only the creator can update this competition."}, status=status.HTTP_403_FORBIDDEN)
+        # Use service to update competition and participants
+        updated_competition = CompetitionService.update_competition(competition, request.data)
+        serializer = CompetitionDetailSerializer(updated_competition)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except Competition.DoesNotExist:
+        return Response({"error": "Competition not found."}, status=status.HTTP_404_NOT_FOUND)
+
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])

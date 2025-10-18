@@ -7,6 +7,46 @@ from friendships.services import FriendshipService
 User = get_user_model()
 
 class CompetitionService:
+    @staticmethod
+    def update_competition(competition, data):
+        """
+        Update competition fields and participants.
+        Args:
+            competition: Competition instance to update
+            data: dict with possible keys: title, description, start_date, end_date, participants (list of user ids)
+        Returns:
+            Updated competition instance
+        """
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+        # Update fields
+        updated = False
+        for field in ['title', 'description', 'start_date', 'end_date']:
+            if field in data:
+                setattr(competition, field, data[field])
+                updated = True
+        if updated:
+            competition.save()
+        # Update participants if provided
+        participants_ids = data.get('participants', None)
+        if participants_ids is not None:
+            # Always keep the creator
+            participants_ids = set(participants_ids)
+            participants_ids.add(competition.creator.id)
+            # Remove participants not in the new list (except creator)
+            for p in competition.participant_set.all():
+                if p.user.id not in participants_ids and p.user != competition.creator:
+                    p.delete()
+            # Add new participants
+            existing_ids = set(competition.participant_set.values_list('user_id', flat=True))
+            for user_id in participants_ids:
+                if user_id not in existing_ids:
+                    try:
+                        user = User.objects.get(id=user_id)
+                        competition.participant_set.create(user=user)
+                    except User.DoesNotExist:
+                        continue
+        return competition
     
     @staticmethod
     def get_competitions_for_user(user):

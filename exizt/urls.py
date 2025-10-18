@@ -30,6 +30,7 @@ urlpatterns = [
     path('competitions/active/', competition_views.get_active_competitions, name='get_active_competitions'),
     path('competitions/future/', competition_views.get_future_competitions, name='get_future_competitions'),
     path('competitions/<int:competition_id>/', competition_views.get_competition_detail, name='get_competition_detail'),
+     path('competitions/<int:competition_id>/update/', competition_views.update_competition, name='update_competition'),
     path('competitions/<int:competition_id>/leave/', competition_views.leave_competition, name='leave_competition'),
     path('competitions/invitations/', competition_views.get_invitations, name='get_competition_invitations'),
     path('competitions/invitations/send/', competition_views.send_invitation, name='send_competition_invitation'),
