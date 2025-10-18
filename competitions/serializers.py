@@ -13,6 +13,7 @@ class CompetitionListSerializer(serializers.ModelSerializer):
     creator = ProfileSerializer(source='creator.profile', read_only=True)
     participant_count = serializers.SerializerMethodField()
     is_creator = serializers.SerializerMethodField()
+    status = serializers.SerializerMethodField()
     
     class Meta:
         model = Competition
@@ -21,6 +22,8 @@ class CompetitionListSerializer(serializers.ModelSerializer):
             'status', 'creator', 'participant_count', 'created_at',
             'is_creator'
         ]
+    def get_status(self, obj):
+        return obj.get_status()
 
     def get_participant_count(self, obj):
         return Participant.objects.filter(competition=obj).count()
@@ -36,6 +39,7 @@ class CompetitionDetailSerializer(serializers.ModelSerializer):
     winner = ProfileSerializer(source='winner.profile', read_only=True)
     participants = serializers.SerializerMethodField()
     is_creator = serializers.SerializerMethodField()
+    status = serializers.SerializerMethodField()
     
     class Meta:
         model = Competition
@@ -44,6 +48,8 @@ class CompetitionDetailSerializer(serializers.ModelSerializer):
             'status', 'creator', 'winner', 'participants', 'created_at',
             'is_creator'
         ]
+    def get_status(self, obj):
+        return obj.get_status()
 
     def get_participants(self, obj):
         participants = obj.participant_set.all()
