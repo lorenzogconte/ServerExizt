@@ -160,34 +160,28 @@ class CompetitionService:
         Returns:
             List of competitions where ranking was updated
         """
-        # Get all active competitions where the user is a participant
+        # Get all active competitions where the user is a participant (use only date range, not DB status)
         now = timezone.now()
         active_competitions = Competition.objects.filter(
             participant__user=user,
             start_date__lte=now,
-            end_date__gte=now,
-            status='active'
+            end_date__gte=now
         ).distinct()
-        
         updated_competitions = []
-        
         for competition in active_competitions:
             # Get participant record for this user in this competition
             participant = Participant.objects.get(user=user, competition=competition)
-            
+            old_usage = participant.average_daily_usage
             # Update average daily usage (you might want a more sophisticated algorithm here)
             if participant.average_daily_usage is None:
                 participant.average_daily_usage = screen_time_minutes
             else:
                 # Simple moving average (could be improved with more historical data)
                 participant.average_daily_usage = (participant.average_daily_usage + screen_time_minutes) / 2
-            
             participant.save()
             updated_competitions.append(competition)
-            
             # Recalculate rankings for all participants in this competition
             CompetitionService.recalculate_competition_rankings(competition)
-        
         return updated_competitions
 
     @staticmethod
