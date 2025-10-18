@@ -3,14 +3,14 @@ from .models import Competition, Participant, CompetitionInvitation
 from users.serializers import ProfileSerializer, UserSerializer
 
 class ParticipantSerializer(serializers.ModelSerializer):
-    user = ProfileSerializer(read_only=True)
+    user = ProfileSerializer(source='user.profile', read_only=True)
     
     class Meta:
         model = Participant
         fields = ['id', 'user', 'joined_at', 'position', 'average_daily_usage']
 
 class CompetitionListSerializer(serializers.ModelSerializer):
-    creator = ProfileSerializer(read_only=True)
+    creator = ProfileSerializer(source='creator.profile', read_only=True)
     participant_count = serializers.SerializerMethodField()
     is_creator = serializers.SerializerMethodField()
     
@@ -32,8 +32,8 @@ class CompetitionListSerializer(serializers.ModelSerializer):
         return False
     
 class CompetitionDetailSerializer(serializers.ModelSerializer):
-    creator = ProfileSerializer(read_only=True)
-    winner = ProfileSerializer(read_only=True)
+    creator = ProfileSerializer(source='creator.profile', read_only=True)
+    winner = ProfileSerializer(source='winner.profile', read_only=True)
     participants = serializers.SerializerMethodField()
     is_creator = serializers.SerializerMethodField()
     
