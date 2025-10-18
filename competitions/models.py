@@ -2,6 +2,15 @@ from django.db import models
 from django.conf import settings
 
 class Competition(models.Model):
+    def get_status(self):
+        from django.utils import timezone
+        now = timezone.now()
+        if self.start_date > now:
+            return 'upcoming'
+        elif self.end_date < now:
+            return 'completed'
+        else:
+            return 'active'
     STATUS_CHOICES = (
         ('upcoming', 'Upcoming'),
         ('active', 'Active'),
